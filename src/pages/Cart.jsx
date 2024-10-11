@@ -1,15 +1,21 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import product_not_found from "../assets/images/product_not_found.png";
 import { FaTrashAlt } from "react-icons/fa";
 import { useState } from "react";
+import Modal from "../components/Modal";
+import ChangeAdderss from "../components/ChangeAdderss";
+import { removeFromCart } from "../redux/cartSlice";
 
 const Cart = () => {
-  const cart = useSelector((state) => state.cart.products);
-  const val = useSelector((state)=>state.cart)
+  const dispatch = useDispatch()
+  const cart = useSelector((state) => state.cart);
+  const [isModalOpen , setIsModalOpen] = useState(false)
   const [address,setAddress] = useState('main street , kalika chowk')
+  console.log(cart.products);
+  
   return (
     <div className="container mx-auto py-8 min-h-96 px-4 md:px-16 lg:px-24">
-      {cart.length > 0 ? (
+      {cart.products.length > 0 ? (
         <div>
           <h3 className="text-2xl font-semibold mb-4">SHOPPING CART</h3>
           <div className="flex flex-col md:flex-row justify-between space-x-10 mt-8">
@@ -18,13 +24,13 @@ const Cart = () => {
                 <p>products</p>
                 <div className="flex space-x-12">
                   <p>Price</p>
-                  <p>Quantity</p>val.totalPrice
+                  <p>Quantity</p>
                   <p>Subtotal</p>
                   <p>Remove</p>
                 </div>
               </div>
               <div>
-                {cart.map((product) => (
+                {cart.products.map((product) => (
                   <div
                     key={product.id}
                     className="flex items-center justify-between p-3 border-b"
@@ -53,7 +59,10 @@ const Cart = () => {
                         </button>
                       </div>
                       <p>${(product.quantity * product.price).toFixed(2)}</p>
-                      <button className="text-red-700 hover:text-red-500">
+                      <button
+                        className="text-red-700 hover:text-red-500"
+                        onClick={() => dispatch(removeFromCart(product))}
+                      >
                         <FaTrashAlt />
                       </button>
                     </div>
@@ -61,29 +70,39 @@ const Cart = () => {
                 ))}
               </div>
             </div>
-            <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md border">
+            <div className="md:w-1/3 bg-white sm:mt-[10px] mt-0 p-6 rounded-lg shadow-md border">
               <h3 className="text-sm font-semibold mb-5">CART TOTAL</h3>
               <div className="flex justify-between mb-5 border-b pb-1">
                 <span className="text-sm">Total Items:</span>
-                <span>{val.totalQuantity}</span>
+                <span>{cart.totalQuantity}</span>
               </div>
               <div className="mb-4 border-b pb-2">
                 <p className="ml-2">Shipping :</p>
                 <p className="ml-2">Shipping to :</p>
                 <span className="text-sm font-bold">{address}</span>
-                <button className="text-blue-500 hover:underline mt-1 ml-2">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="text-blue-500 hover:underline mt-1 ml-2"
+                >
                   change address
                 </button>
               </div>
               <div className="flex justify-between mb-4">
                 <span>Total Price :</span>
-                <span> ${val.totalPrice.toFixed(2)}</span>
+                <span> ${(cart.totalPrice).toFixed(2)}</span>
               </div>
               <button className="w-full bg-red-600 text-white py-2 hover:bg-red-800">
                 Proceed to checkout
               </button>
             </div>
           </div>
+          <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+            <ChangeAdderss
+              address={address}
+              setAddress={setAddress}
+              setIsModalOpen={setIsModalOpen}
+            />
+          </Modal>
         </div>
       ) : (
         <div className="flex justify-center">

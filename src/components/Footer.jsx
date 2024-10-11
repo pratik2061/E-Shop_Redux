@@ -60,8 +60,8 @@ return (
             placeholder="Enter email"
             className="w-full p-2 rounded-l-lg outline-none bg-gray-800 border-gray-600 border"
           />
-          <button className="bg-red-800 text-white px-4 py-2 rounded-r-lg border-gray-600 border">
-            Subscribe
+          <button className="bg-red-700 text-white px-4 py-2 rounded-r-lg border-gray-600 border">
+            Send
           </button>
         </form>
       </div>
