@@ -4,14 +4,13 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useState } from "react";
 import Modal from "../components/Modal";
 import ChangeAdderss from "../components/ChangeAdderss";
-import { removeFromCart } from "../redux/cartSlice";
+import { decreaseQuantity, increaseQuantity, removeFromCart } from "../redux/cartSlice";
 
 const Cart = () => {
   const dispatch = useDispatch()
   const cart = useSelector((state) => state.cart);
   const [isModalOpen , setIsModalOpen] = useState(false)
   const [address,setAddress] = useState('main street , kalika chowk')
-  console.log(cart.products);
   
   return (
     <div className="container mx-auto py-8 min-h-96 px-4 md:px-16 lg:px-24">
@@ -50,11 +49,16 @@ const Cart = () => {
                     <div className="flex space-x-12 items-center">
                       <p>${product.price}</p>
                       <div className="flex items-center justify-center border">
-                        <button className="hover:bg-slate-100 text-xl font-bold px-1 justify-center border-r">
+                        <button 
+                        onClick={()=>dispatch(decreaseQuantity(product))}
+                        className="hover:bg-slate-100 text-xl font-bold px-1 justify-center border-r">
                           -
                         </button>
                         <p className="text-xl px-2">{product.quantity}</p>
-                        <button className="text-xl px-1 border-l hover:bg-slate-100">
+                        <button
+                          onClick={() => dispatch(increaseQuantity(product))}
+                          className="text-xl px-1 border-l hover:bg-slate-100"
+                        >
                           +
                         </button>
                       </div>
@@ -89,7 +93,7 @@ const Cart = () => {
               </div>
               <div className="flex justify-between mb-4">
                 <span>Total Price :</span>
-                <span> ${(cart.totalPrice).toFixed(2)}</span>
+                <span> ${cart.totalPrice.toFixed(2)}</span>
               </div>
               <button className="w-full bg-red-600 text-white py-2 hover:bg-red-800">
                 Proceed to checkout
